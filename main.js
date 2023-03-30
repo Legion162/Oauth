@@ -107,7 +107,9 @@ async function getXblToken(access_token) {
 		config,
 		{ 'Content-Type': 'application/json', Accept: 'application/json' }
 	);
+	console.log(response)
 	const ParsedRes = JSON.parse(response);
+	console.log(ParsedRes)
 	const xblToken = ParsedRes.Token;
 
 	return xblToken;
