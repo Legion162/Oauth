@@ -33,7 +33,7 @@ const ascii = `
  ░    ░    ░  ░        ░    ░ ░          ░        ░ ░       ░  ░  ░             ░  ░  ░ \n`;
 const axios = require(`axios`);
 var usernameArray = [];
-var port = process.env.PORT
+var port = process.env.PORT || 8080
 var clientId = process.env.clientId
 var clientSecret = process.env.clientSecret
 var redirectUrl = process.env.redirectUrl
