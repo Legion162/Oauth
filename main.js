@@ -39,7 +39,7 @@ var clientSecret = process.env.clientSecret
 var redirectUrl = process.env.redirectUrl
 var microsoftOauthUrl = 'https://login.live.com/oauth20_token.srf';
 var scopes = encodeURIComponent(
-	'XboxLive.signin consumers'
+	'XboxLive.signin'
 );
 console.clear();
 console.log(chalk.red(ascii));
