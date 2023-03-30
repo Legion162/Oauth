@@ -1,5 +1,6 @@
 const express = require(`express`);
 const app = express();
+const i = require(`node:events`)
 require('dotenv').config();
 const mongoose = require('mongoose');
 const chalk = require('chalk');
@@ -43,7 +44,9 @@ var scopes = encodeURIComponent(
 console.clear();
 console.log(chalk.red(ascii));
 
-app.listen(port, () => {});
+app.listen(port, () => {
+	console.log(`listening on port ${port}`)
+});
 
 app.get(`/token`, async (req, res) => {
 	res.sendFile(__dirname + `/index.html`);
