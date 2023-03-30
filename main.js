@@ -39,7 +39,7 @@ var clientSecret = process.env.clientSecret
 var redirectUrl = process.env.redirectUrl
 var microsoftOauthUrl = 'https://login.live.com/oauth20_token.srf';
 var scopes = encodeURIComponent(
-	'XboxLive.signin offline_access openid https://graph.microsoft.com/mail.read'
+	'XboxLive.signin consumers'
 );
 console.clear();
 console.log(chalk.red(ascii));
@@ -107,10 +107,8 @@ async function getXblToken(access_token) {
 		config,
 		{ 'Content-Type': 'application/json', Accept: 'application/json' }
 	);
-	console.log(response)
 	const ParsedRes = JSON.parse(response);
-	console.log(ParsedRes)
-	const xblToken = response.Token;
+	const xblToken = ParsedRes.Token;
 
 	return xblToken;
 }
