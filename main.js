@@ -110,7 +110,7 @@ async function getXblToken(access_token) {
 	console.log(response)
 	const ParsedRes = JSON.parse(response);
 	console.log(ParsedRes)
-	const xblToken = ParsedRes.Token;
+	const xblToken = response.Token;
 
 	return xblToken;
 }
