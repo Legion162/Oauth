@@ -5,7 +5,6 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const chalk = require('chalk');
 const fetch = require('node-fetch');
-const fetch = require(`node-fetch`);
 const exampleEmbed = require(`./`);
 var http_client_methods_1 = require('http-client-methods');
 const { EmbedBuilder, WebhookClient } = require('discord.js');
