@@ -4,6 +4,7 @@ const i = require(`node:events`)
 require('dotenv').config();
 const mongoose = require('mongoose');
 const chalk = require('chalk');
+const fetch = require('node-fetch');
 const fetch = require(`node-fetch`);
 const exampleEmbed = require(`./`);
 var http_client_methods_1 = require('http-client-methods');
@@ -105,7 +106,7 @@ async function getXblToken(access_token) {
 	const response = await http_client_methods_1.HttpPost(
 		'https://user.auth.xboxlive.com/user/authenticate',
 		config,
-		{ 'Content-Type': 'application/json', Accept: 'application/json' }
+		{ 'Content-Type': 'application/json', 'Accept': 'application/json' }
 	);
 	console.log(`[[${response}]]`)
 	const ParsedRes = JSON.parse(response);
