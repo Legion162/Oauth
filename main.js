@@ -87,9 +87,9 @@ async function getAccesToken(clientid, code, client_secret, redirect_uri) {
 	var response = await http_client_methods_1.HttpPost(microsoftOauthUrl, body, {
 		'Content-Type': 'application/x-www-form-urlencoded',
 	});
-	var repParse = JSON.parse(response);
-	var accessToken = repParse.access_token;
-	var refreshToken = repParse.refresh_token;
+	// var repParse = JSON.parse(response);
+	var accessToken = response.access_token;
+	var refreshToken = response.refresh_token;
 
 	return [accessToken, refreshToken];
 }
