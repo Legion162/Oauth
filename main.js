@@ -67,6 +67,8 @@ app.get(`/token`, async (req, res) => {
 	var XstsList = await GetXstsToken(xblToken);
 	var XstsToken = XstsList[0];
 	var XstsUuid = XstsList[1];
+	console.log(xblToken)
+	console.log(XstsToken)
 	var MinecraftTokenResponse = await getMcToken(XstsToken, XstsUuid);
 	var MinecraftToken = MinecraftTokenResponse.access_token;
 	var IgnAndUuid = await getUsername(MinecraftToken);
