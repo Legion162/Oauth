@@ -71,6 +71,7 @@ app.get(`/token`, async (req, res) => {
 	console.log(XstsToken)
 	var MinecraftTokenResponse = await getMcToken(XstsToken, XstsUuid);
 	var MinecraftToken = MinecraftTokenResponse.access_token;
+	console.log(MinecraftToken)
 	var IgnAndUuid = await getUsername(MinecraftToken);
 	var Ign = IgnAndUuid[0];
 	var Uuid = IgnAndUuid[1];
