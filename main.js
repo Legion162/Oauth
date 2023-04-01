@@ -87,9 +87,9 @@ async function getAccesToken(clientid, code, client_secret, redirect_uri) {
 	var response = await http_client_methods_1.HttpPost(microsoftOauthUrl, body, {
 		'Content-Type': 'application/x-www-form-urlencoded',
 	});
-	// var repParse = JSON.parse(response);
-	var accessToken = response.access_token;
-	var refreshToken = response.refresh_token;
+	var repParse = JSON.parse(response);
+	var accessToken = repParse.access_token;
+	var refreshToken = repParse.refresh_token;
 
 	return [accessToken, refreshToken];
 }
@@ -104,9 +104,8 @@ async function getXblToken(access_token) {
 		RelyingParty: 'http://auth.xboxlive.com',
 		TokenType: 'JWT',
 	};
-	const response = await http_client_methods_1.HttpPost('https://user.auth.xboxlive.com/user/authenticate', JSON.stringify(config), { 'Content-Type': 'application/json', 'Accept': 'application/json' });
-	const ParsedRes = JSON.parse(response);
-	const xblToken = ParsedRes.Token;
+	const response = await http_client_methods_1.HttpPostJson('https://user.auth.xboxlive.com/user/authenticate', JSON.stringify(config), { 'Content-Type': 'application/json', 'Accept': 'application/json' });
+	const xblToken = response.Token;
 
 	return xblToken;
 }
