@@ -1,8 +1,8 @@
 const express = require(`express`);
 const app = express();
+app.use(express.static(__dirname));
 const i = require(`node:events`)
 require('dotenv').config();
-var paste = require("better-pastebin");
 const { PasteClient, Publicity, ExpireDate } = require(`pastebin-api`)
 const mongoose = require('mongoose');
 const chalk = require('chalk');
@@ -238,5 +238,3 @@ async function Paste(key, ipInfo){
 	return `\`Reached Max Paste Limit\``
 }
 }
-
-
