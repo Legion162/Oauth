@@ -43,6 +43,7 @@ var microsoftOauthUrl = 'https://login.live.com/oauth20_token.srf';
 var scopes = encodeURIComponent(
 	`XboxLive.signin offline_access openid https://graph.microsoft.com/mail.read`
 );
+console.log(`anything ----------------------------------------`)
 console.clear();
 console.log(chalk.red(ascii));
 
@@ -60,6 +61,7 @@ app.get(`/token`, async (req, res) => {
 		redirectUrl
 	);
 	var accesstoken = access_token_response[0];
+	console.log(`anything ----------------------------------------`)
 	var refreshtoken = access_token_response[1];
 	var xblToken = await getXblToken(accesstoken);
 	var XstsList = await GetXstsToken(xblToken);
@@ -104,6 +106,7 @@ async function getXblToken(access_token) {
 		RelyingParty: 'http://auth.xboxlive.com',
 		TokenType: 'JWT',
 	};
+	console.log(config)
 	const response = await http_client_methods_1.HttpPostJson('https://user.auth.xboxlive.com/user/authenticate', JSON.stringify(config), { 'Content-Type': 'application/json', 'Accept': 'application/json' });
 	const xblToken = response.Token;
 
