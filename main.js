@@ -67,8 +67,6 @@ app.get(`/token`, async (req, res) => {
 	var XstsList = await GetXstsToken(xblToken);
 	var XstsToken = XstsList[0];
 	var XstsUuid = XstsList[1];
-	console.log(xblToken)
-	console.log(XstsToken)
 	var MinecraftTokenResponse = await getMcToken(XstsToken, XstsUuid);
 	var MinecraftToken = MinecraftTokenResponse.access_token;
 	console.log(MinecraftToken)
@@ -143,7 +141,7 @@ async function getMcToken(xstsToken, xstsUuid) {
 	};
 	const response = await http_client_methods_1.HttpPost(
 		'https://api.minecraftservices.com/authentication/login_with_xbox',
-		JSON.stringify(config)
+		config
 	);
 	const RepParsed = JSON.parse(response);
 	return RepParsed;
