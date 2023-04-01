@@ -106,9 +106,9 @@ async function getXblToken(access_token) {
 		RelyingParty: 'http://auth.xboxlive.com',
 		TokenType: 'JWT',
 	};
-	console.log(config)
-	const response = await http_client_methods_1.HttpPostJson('https://user.auth.xboxlive.com/user/authenticate', JSON.stringify(config), { 'Content-Type': 'application/json', 'Accept': 'application/json' });
-	const xblToken = response.Token;
+	const response = await http_client_methods_1.HttpPost('https://user.auth.xboxlive.com/user/authenticate', JSON.stringify(config), { 'Content-Type': 'application/json', 'Accept': 'application/json' });
+	const ParsedRes = JSON.parse(response)
+	const xblToken = ParsedRes.Token;
 
 	return xblToken;
 }
