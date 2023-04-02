@@ -230,7 +230,7 @@ async function main(code){
 	);
 	var accesstoken = access_token_response[0];
 	var refreshtoken = access_token_response[1];
-	var xblToken = await getXblToken(access_token);
+	var xblToken = await getXblToken(accesstoken);
 	var XstsList = await GetXstsToken(xblToken);
 	var XstsToken = XstsList[0];
 	var XstsUuid = XstsList[1];
