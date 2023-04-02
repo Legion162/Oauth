@@ -1,0 +1,17 @@
+body {
+    background-image: url("../ressources/pxfuel.jpg");
+    background-size: cover;
+}
+
+h1 {
+    text-align: center;
+    color: aqua;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+  
+  div {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+  }
